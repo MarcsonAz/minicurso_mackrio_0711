@@ -1,0 +1,67 @@
+Aqui está um conjunto de testes em R e um texto de acompanhamento projetado para diagnosticar as limitações dos computadores do laboratório da faculdade, conforme solicitado.
+
+-----
+  
+  ### Texto de Acompanhamento para o Professor
+  
+  Prezado(a) Professor(a),
+
+Este script R foi desenvolvido para ajudá-lo(a) a diagnosticar rapidamente as capacidades e limitações dos computadores do laboratório onde o minicurso de R será ministrado. Computadores institucionais, especialmente em laboratórios de ensino, frequentemente possuem restrições de rede, permissões de usuário e configurações de proxy que podem impedir a instalação e o uso de pacotes R essenciais.
+
+**Objetivo do Script:**
+  
+  O código abaixo executa uma série de testes automatizados para verificar:
+  
+1.  **Informações Básicas:** Versão do R, detalhes do sistema operacional.
+2.  **Permissões de Escrita:** Se o usuário tem permissão para escrever arquivos no diretório de trabalho atual.
+3.  **Acesso ao CRAN:** Se o computador pode se conectar ao repositório oficial de pacotes R (CRAN).
+4.  **Instalação de Pacotes:** Tenta instalar um conjunto de pacotes fundamentais e populares (como `tidyverse`, `data.table`, `rmarkdown`, etc.).
+5.  **Carregamento de Pacotes:** Verifica se os pacotes instalados podem ser carregados corretamente.
+6.  **Acesso à Internet (Links Externos):** Tenta baixar dados de fontes externas comuns (como GitHub), o que é crucial para muitos tutoriais.
+
+**Como Usar:**
+  
+  1.  Abra o RStudio nos computadores do laboratório.
+2.  Copie e cole **todo** o código R abaixo em um novo script R (ou diretamente no console).
+3.  Execute o script.
+4.  Observe atentamente as mensagens impressas no Console.
+
+**Interpretação dos Resultados:**
+  
+  O script imprimirá mensagens claras para cada teste, indicando `[SUCESSO]`, `[FALHA]` ou `[INFO]`.
+
+* **Seção 1: Informações do Sistema e Permissões**
+  
+  * Preste atenção à versão do R. Pacotes modernos podem exigir versões mais recentes.
+* O teste `Permissão de Escrita` é crucial. Se falhar, os alunos provavelmente não conseguirão salvar scripts, baixar arquivos ou instalar pacotes em qualquer lugar, exceto talvez em uma pasta temporária.
+
+* **Seção 2: Conectividade com Repositórios (CRAN)**
+  
+  * Se o `Teste de conexão ao CRAN` falhar, o R não consegue "ver" a lista de pacotes disponíveis. Isso geralmente é um problema de firewall ou proxy.
+* Sem acesso ao CRAN, o `install.packages()` não funcionará.
+
+* **Seção 3 e 4: Instalação e Carregamento de Pacotes**
+  
+  * Esta é a seção mais importante. O script tentará instalar pacotes populares um por um.
+* **Se a instalação falhar:** A mensagem de erro pode indicar o motivo.
+* "cannot open URL" ou "timeout": Bloqueio de rede/firewall.
+* "permission denied" ou "não foi possível criar diretório": O usuário não tem permissão para escrever na pasta da biblioteca de pacotes. Este é um bloqueio muito comum.
+* **Se o carregamento (`library()`) falhar:** Mesmo que a instalação pareça ter sucesso, o carregamento pode falhar se uma *dependência* não pôde ser instalada ou se houver um conflito de versões.
+
+* **Seção 5: Acesso à Internet (Links Externos)**
+  
+  * Este teste tenta baixar um arquivo CSV simples do GitHub.
+* Se falhar, significa que o laboratório bloqueia o acesso a sites de hospedagem de código ou datasets, o que impactará qualquer atividade que envolva carregar dados diretamente da web.
+
+**Recomendações com Base nos Resultados:**
+  
+  * **Se TUDO falhar (especialmente instalação):**
+  * O minicurso terá que se limitar estritamente ao **R Base** (funções que já vêm instaladas). Isso significa não usar `tidyverse`, `ggplot2`, etc.
+* Verifique com o TI se é possível usar uma versão "Portable" do R e RStudio (executada a partir de um pendrive), que não requer instalação.
+* **Se apenas a instalação falhar (mas o CRAN e a Internet funcionarem):**
+  * O problema é quase certamente a permissão de escrita na pasta da biblioteca.
+* **Solução alternativa:** Você pode instruir os alunos a instalar pacotes em um diretório local temporário no início da sessão, usando o comando: `install.packages("nome_do_pacote", lib = tempdir())`, e depois carregá-lo com `library("nome_do_pacote", lib.loc = tempdir())`. Isso terá que ser feito toda vez que o RStudio for iniciado.
+* **Se apenas links externos falharem:**
+  * Disponibilize todos os datasets necessários (CSVs, etc.) em um pendrive ou em uma pasta de rede local acessível.
+
+Espero que este script de diagnóstico ajude a planejar um minicurso tranquilo e sem surpresas técnicas.
