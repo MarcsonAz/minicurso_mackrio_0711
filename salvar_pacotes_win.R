@@ -14,8 +14,13 @@ pacotes_base <- c(
   "rmarkdown",  # Para relatórios (puxa knitr, htmltools...)
   "readxl",     # Para ler arquivos Excel (.xls, .xlsx)
   "jsonlite",   # Para ler dados em formato JSON
-  "httr"        # Para comunicação web/APIs
-  
+  "httr",        # Para comunicação web/APIs
+  "litedown",
+  "sidrar",
+  "readxl",
+  "lubridate",
+  "stringr",
+  "tidyr"
 )
 
 # 1. A pasta onde o "Admin" salvará os .zip

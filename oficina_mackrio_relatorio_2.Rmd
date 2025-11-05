@@ -1,0 +1,128 @@
+---
+title: "rel"
+author: "rel_author"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Relatório 2 - Comparando Nações (PIB per capita)
+
+#### Pergunta-Chave
+
+Como o PIB per capita do Brasil se compara ao de seus vizinhos sul-americanos (Argentina, Chile, Colômbia) e ao dos EUA nas últimas duas décadas?
+
+#### Descrição dos Dados
+
+Usaremos o pacote WDI para acessar a base de dados World Development Indicators (WDI) do Banco Mundial. Buscaremos o indicador "NY.GDP.PCAP.CD", que é o PIB per capita em dólares americanos correntes.
+
+
+Vamos mostrar os códigos e os resultado.
+
+```{r setup_wdi, message=FALSE, warning=FALSE}
+library(WDI)
+library(dplyr)
+library(ggplot2)
+```
+
+
+```{r carga_wdi}
+# 2. Carga de dados - arquivo no Temp
+dados_brutos_pib <- readxl::read_excel('C:\\mark\\projetos\\oficina_r_mackrio\\dados_pib_banco_mundial.xlsx',
+                                        col_types = "text")
+
+
+# 2. Carga de Dados: Buscando no Banco Mundial
+# Definir quais países e qual indicador queremos
+# paises_selecionados <- c("BRA", "ARG", "CHL", "COL", "USA") # Códigos ISO
+# indicador_pib <- "NY.GDP.PCAP.CD" # PIB per capita (USD corrente)
+# 
+# dados_brutos_pib <- WDI(
+#   country = paises_selecionados,
+#   indicator = indicador_pib,
+#   start = 2000,
+#   end = 2023,
+#   extra = FALSE # Não queremos colunas extras de metadados
+# )
+# write.csv2(dados_brutos_pib,"dados_pib_banco_mundial.xlsx",sep = ";")
+
+# observar dados parciais para identificar dados baixados
+dplyr::tibble(head(dados_brutos_pib))
+```
+
+
+
+```{r limpeza_wdi}
+
+# 3. Limpeza dos Dados
+# O pacote WDI já entrega os dados bem organizados
+dados_tratados_pib <- dados_brutos_pib %>%
+  # Renomear colunas para facilitar (e traduzir)
+  rename(
+    pais = country,
+    ano = year,
+    pib_per_capita = NY.GDP.PCAP.CD
+  ) %>%
+  # Remover anos/países onde o dado não estava disponível
+  filter(!is.na(pib_per_capita)) %>%
+  # Garantir que o ano e o pib são tratados como números
+  mutate(ano = as.numeric(ano),
+         pib_per_capita = as.numeric(pib_per_capita))
+
+# observar dados prontos
+dplyr::tibble(head(dados_tratados_pib))
+```
+
+```{r tratamento_texto}
+
+# AJUSTE DE RÓTULOS
+
+# dados_tratados_pib <- dados_tratados_pib %>% 
+#   mutate(
+#     pais_novo = case_when(
+#       pais == "Brazil" ~ "Brasil",
+#       pais == "United States" ~ "Estados Unidos",
+#       .default = pais
+#     )
+#   )
+```
+
+```{r visualizacao_wdi}
+# 5. Visualização dos Resultados
+
+ggplot(dados_tratados_pib, aes(x = ano, y = pib_per_capita, color = pais)) +
+  geom_line(aes(group = pais)) +
+  geom_point() +
+  
+  labs(
+    title = "PIB per capita (USD Corrente)",
+    caption = "Fonte: Banco Mundial (WDI) | Pacote R 'WDI' | Indicador NY.GDP.PCAP.CD"
+  ) +
+  theme_minimal()
+```
+
+```{r visualizacao_wdi2}
+# 5. Visualização dos Resultados
+ggplot(dados_tratados_pib, aes(x = ano, y = pib_per_capita, color = pais)) +
+  # Usar 'group = pais' garante que o R desenhe uma linha para cada país
+  geom_line(aes(group = pais), linewidth = 1.2) +
+  geom_point(size = 2) + # Adiciona pontos em cada ano
+  
+  # Formatar o eixo Y para mostrar como dólar
+  scale_y_continuous(labels = scales::dollar_format()) +
+  scale_color_brewer(palette = "Set1") +
+  
+  labs(
+    title = "PIB per capita (USD Corrente)",
+    subtitle = "Comparação internacional (2000-2023)",
+    y = "PIB per capita (USD)",
+    x = "Ano",
+    color = "País", # Legenda
+    caption = "Fonte: Banco Mundial (WDI) | Pacote R 'WDI' | Indicador NY.GDP.PCAP.CD"
+  ) +
+  theme_light() # Um tema um pouco diferente
+```
+
+
+#### Avaliação Básica dos Resultados
+
+O gráfico de linhas múltiplas permite uma comparação direta e poderosa. Os alunos verão imediatamente a disparidade entre o PIB per capita dos EUA e dos países sul-americanos. Também poderão notar a alta volatilidade da Argentina, o crescimento mais estável (e superior) do Chile em grande parte do período, e a posição intermediária do Brasil e Colômbia.

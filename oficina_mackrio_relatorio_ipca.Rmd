@@ -1,0 +1,101 @@
+---
+title: "rel_ipca"
+author: "rel_author"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+### Relatório 1 - Resultados recentes de inflação (IPCA)
+
+#### Pergunta-Chave
+
+Como a inflação (IPCA) acumulada em 12 meses se comportou no Brasil nos últimos 2 anos? Conseguimos ver os picos recentes e a tendência atual?
+
+#### Descrição dos Dados
+
+Usaremos os dados diretamente do IBGE. Pela página SIDRA. [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/).
+
+O dado é a tabela 1737, que contém o número índice do IPCA (Índice Nacional de Preços ao Consumidor Amplo), que é a nossa medida oficial de inflação.  Outra forma de consumir esse dado seria pelo pacote em R, chamado sidrar [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/). Informações sobre o pacote estão disponíveis em: https://cran.r-project.org/web/packages/sidrar/index.html
+
+
+Vamos mostrar os códigos e os resultado.
+
+
+```{r setup_ipca, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# 1. carregamento dos pacotes
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+```
+
+
+```{r carga_wdi}
+# 2. Carga de dados - arquivo no Temp
+dados_brutos_ipca <- readxl::read_excel('C:\\mark\\projetos\\oficina_r_mackrio\\tabela1737.xlsx',
+                                        col_types = "text")
+
+# observar dados parciais para identificar dados baixados
+dplyr::tibble(head(dados_brutos_ipca))
+```
+
+
+
+```{r limpeza_ipca}
+
+# 3. Limpeza dos Dados
+# Os dados do SIDRA vêm com muitas colunas. Vamos selecionar e renomear.
+dados_tratados_ipca <- dados_brutos_ipca %>%
+  slice(-c(1:3,n())) %>% 
+  rename(ano_mes = 1,valor = 2) %>% 
+  # Converter a string "202304" para um formato de data real
+  # ym() do lubridate entende "AnoMês"
+  mutate(data = ym(ano_mes)) %>%
+  # Garantir que o valor é numérico (às vezes vem como character)
+  mutate(valor = as.numeric(valor)) %>%
+  # Remover qualquer linha que não tenha data ou valor
+  filter(!is.na(data), !is.na(valor)) %>%
+  # Ordenar pela data, essencial para cálculos de série temporal
+  arrange(data)
+
+# observar dados prontos
+dplyr::tibble(head(dados_tratados_ipca))
+```
+
+```{r visualizacao_wdi}
+# 5. Visualização dos Resultados
+
+ggplot(dados_tratados_ipca, aes(x = data, y = valor)) +
+  geom_line() +
+  labs(
+    title = "Inflação Acumulada em 12 Meses (IPCA)",
+    caption = "Fonte: IBGE (SIDRA) | Tabela 1737"
+  ) +
+  theme_minimal()
+```
+
+```{r visualizacao_wdi2}
+# 5. Visualização dos Resultados
+
+ggplot(dados_tratados_ipca, aes(x = data, y = valor)) +
+  geom_line(color = "darkred", linewidth = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +
+  # Adicionar linhas de meta de inflação (ex: 3% e 4.5%)
+  geom_hline(yintercept = 3.0, linetype = "dotted", color = "blue") +
+  geom_hline(yintercept = 4.5, linetype = "dotted", color = "blue") +
+  labs(
+    title = "Inflação Acumulada em 12 Meses (IPCA)",
+    subtitle = "Período: outubro de 2023 a setembro de 2025",
+    y = "Acumulado 12 Meses (%)",
+    x = "Data",
+    caption = "Fonte: IBGE (SIDRA) | Tabela 1737"
+  ) +
+  theme_minimal()
+```
+
+
+#### Avaliação Básica dos Resultados
+
+O gráfico de linhas mostra a trajetória da inflação acumulada. Os participantes poderão identificar o valor um pouco acima de $5\%$ para o ano de 2025. Com o máximo de $5,53\%$ em Abril de 2025. As linhas pontilhadas ajudam a comparar o resultado com as metas de inflação (que podem ser ajustadas no código), permitindo uma discussão sobre política monetária (Selic) e o custo de vida no período.
+

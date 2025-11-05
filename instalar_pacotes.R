@@ -1,7 +1,6 @@
 # --- Script de Configuração da Sessão da Oficina ---
 #
-# OBJETIVO: Este script, quando executado (via 'source'),
-# prepara o ambiente de R para o minicurso.
+# OBJETIVO: preparar o ambiente de R para a oficina
 #
 # O QUE ELE FAZ:
 # 1. Cria uma pasta de biblioteca de pacotes temporária.
@@ -17,17 +16,13 @@ cat("===============================================================\n\n")
 
 dir_name <- "C:/Temp/pacotes_r/"
 
-cat(paste0("Definir diretório com os arquivos. \n Se estão em: ",dir_name,". DIGITE ENTER ABAIXO\n"))
+cat(paste0("Definir diretório com os arquivos. \nSe estão em: ",dir_name,". DIGITE ENTER ABAIXO\n"))
 
 novo_dir_name <- readline(prompt = "Entre o nome do diretório com os arquivos: ")
 
 if(novo_dir_name != "") dir_name = novo_dir_name
 
-print("\n --  -- \n")
-print(dir_name)
-print("\n --  -- \n")
-
-dir_name <- "C:\\Users\\marcs\\AppData\\Local\\Temp\\Rtmp4ygY3t\\R_Offline_Download\\"
+#dir_name <- "C:\\Users\\marcs\\AppData\\Local\\Temp\\Rtmp67tngw\\R_Offline_Download\\"
 
 
 minha_lib_temporaria <- file.path(tempdir(), "R_000_Minicurso_Biblioteca")
