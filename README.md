@@ -5,10 +5,8 @@
 Material para o minicurso de R palestrado na Mackenzie Rio em 07/11/2025
 
 
-### Oficina de R - Relatórios com dados
+## Arquivo oficinaR.zip para usar no CLOUD
 
+Baixar arquivo o oficinaR.zip e carregar no projeto. Com a sessão aberta fazer o upload de *oficinaR.zip* eo sistema irá descompactar os relatórios e as tabelas de apoio.
 
-
-
-### apoio final
-url_teste <- "https://raw.githubusercontent.com/tidyverse/readr/main/inst/extdata/mtcars.csv"
+Verifique o diretório, algo como: 'cloud/project/'. Pode rodar com o botão Knit.

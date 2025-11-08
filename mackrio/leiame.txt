@@ -1,0 +1,12 @@
+Para a realização da Oficina é necessário preparar os computadores com os arquivos dos pacotes que serão utilizados.
+
+O arquivo instalar_pacotes.R deve ser chamado na seção de cada participante da oficina para instalar os pacotes dentro do Temp de cada PC.
+
+Logo a preparação necessária é que sejam copiados para a pasta Temp de cada PC os arquivos de pacotes que serão usados e o código que fará a instalação.
+
+Os pacotes que serão copiados no Temp de cada PC do laboratório foram organizados com o código salvar_pacotes_win.R . Ele foi rodado em um computador com acesso ao CRAN e que é capaz de organizar todas as dependências.
+
+Com os arquivos .zip de cada pacote, mais o instalar_pacotes.R e teste_relatorio.Rmd copiados para a pasta Temp de um computador, será possível realizar os testes e confirmado os resultados, copiar e colar no Temp de todos os computadores do laboratório.
+
+
+

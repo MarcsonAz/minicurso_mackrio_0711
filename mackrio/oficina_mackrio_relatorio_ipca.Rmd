@@ -15,32 +15,35 @@ Como a inflação (IPCA) acumulada em 12 meses se comportou no Brasil nos últim
 
 Usaremos os dados diretamente do IBGE. Pela página SIDRA. [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/).
 
-O dado é a tabela 1737, que contém o número índice do IPCA (Índice Nacional de Preços ao Consumidor Amplo), que é a nossa medida oficial de inflação.  Outra forma de consumir esse dado seria pelo pacote em R, chamado sidrar [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/). Informações sobre o pacote estão disponíveis em: https://cran.r-project.org/web/packages/sidrar/index.html
+O dado é a tabela 1737, que contém o número índice do IPCA (Índice Nacional de Preços ao Consumidor Amplo), que é a medida oficial de inflação no Brasil. [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/). Outra forma de consumir esse dado seria pelo pacote em R, chamado *sidrar*, informações sobre o pacote estão disponíveis em: https://cran.r-project.org/web/packages/sidrar/index.html
 
 
-Vamos mostrar os códigos e os resultado.
+Vamos mostrar os códigos e os resultados. Para esconder os códigos do resultado, colocar *echo = FALSE*. Observar primeiro bloco de código abaixo com essa propriedade inserida.
 
+Bloco de código 1. Carregamento de pacotes (omitido) 
 
-```{r setup_ipca, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup_ipca, echo = FALSE, message=FALSE, warning=FALSE}
 
-# 1. carregamento dos pacotes
 library(dplyr)
 library(ggplot2)
 library(lubridate)
 ```
 
+Bloco de código 2. Carregamento de dados
 
-```{r carga_wdi}
+```{r carga_ipca}
 # 2. Carga de dados - arquivo no Temp
-dados_brutos_ipca <- readxl::read_excel('C:\\mark\\projetos\\oficina_r_mackrio\\tabela1737.xlsx',
+
+#### ajustar caminho da pasta - EXEMPLO: '/cloud/project/'
+
+dados_brutos_ipca <- readxl::read_excel('/cloud/project/Tabela1737.xlsx',
                                         col_types = "text")
 
 # observar dados parciais para identificar dados baixados
 dplyr::tibble(head(dados_brutos_ipca))
 ```
 
-
+Bloco de código 3. Limpeza de dados
 
 ```{r limpeza_ipca}
 
@@ -63,6 +66,8 @@ dados_tratados_ipca <- dados_brutos_ipca %>%
 dplyr::tibble(head(dados_tratados_ipca))
 ```
 
+Bloco de código 4. Visualização inicial
+
 ```{r visualizacao_wdi}
 # 5. Visualização dos Resultados
 
@@ -74,6 +79,8 @@ ggplot(dados_tratados_ipca, aes(x = data, y = valor)) +
   ) +
   theme_minimal()
 ```
+
+Bloco de código 5. Visualização para análise
 
 ```{r visualizacao_wdi2}
 # 5. Visualização dos Resultados
@@ -95,7 +102,7 @@ ggplot(dados_tratados_ipca, aes(x = data, y = valor)) +
 ```
 
 
-#### Avaliação Básica dos Resultados
+#### Análise Básica dos Resultados
 
 O gráfico de linhas mostra a trajetória da inflação acumulada. Os participantes poderão identificar o valor um pouco acima de $5\%$ para o ano de 2025. Com o máximo de $5,53\%$ em Abril de 2025. As linhas pontilhadas ajudam a comparar o resultado com as metas de inflação (que podem ser ajustadas no código), permitindo uma discussão sobre política monetária (Selic) e o custo de vida no período.
 

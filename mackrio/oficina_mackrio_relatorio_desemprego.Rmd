@@ -13,21 +13,15 @@ A taxa de desemprego no Brasil (nacional) se move da mesma forma que nas Grandes
 
 #### Descrição dos Dados
 
-Voltamos ao sidra (IBGE) para buscar dados da PNAD Contínua. Usaremos a Tabela 4093, com os dados diretamente do IBGE. Pela página SIDRA. [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/).
+Voltamos ao sidra (IBGE) para buscar dados da PNAD Contínua. Usaremos a Tabela 4093, com os dados diretamente do IBGE. Pela página SIDRA. [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/). A tabela 4093 mede a taxa de desocupação (desemprego) por trimestre, tanto para o Brasil quanto para as Grandes Regiões. [https://sidra.ibge.gov.br/tabela/4093](https://sidra.ibge.gov.br/tabela/4093) 
 
+Outra forma de consumir esse dado seria pelo pacote em R, chamado *sidrar*. Informações sobre o pacote estão disponíveis em: [https://cran.r-project.org/web/packages/sidrar/index.html](https://cran.r-project.org/web/packages/sidrar/index.html)
 
-A tabela 4093 mede a taxa de desocupação (desemprego) por trimestre, tanto para o Brasil quanto para as Grandes Regiões. [https://sidra.ibge.gov.br/tabela/4093](https://sidra.ibge.gov.br/tabela/4093)
+Vamos mostrar os códigos e os resultados. Para esconder os códigos do resultado, colocar *echo = FALSE*. Observar primeiro bloco de código abaixo com essa propriedade inserida.
 
+Bloco de código 1. Carregamento de pacotes (omitido) 
 
-Outra forma de consumir esse dado seria pelo pacote em R, chamado sidrar [https://sidra.ibge.gov.br/](https://sidra.ibge.gov.br/). Informações sobre o pacote estão disponíveis em: [https://cran.r-project.org/web/packages/sidrar/index.html](https://cran.r-project.org/web/packages/sidrar/index.html)
-
-
-Vamos mostrar os códigos e os resultado.
-
-
-```{r setup_pnad, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+```{r setup_pnad, echo = FALSE,  message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggplot2)
 library(lubridate)
@@ -35,18 +29,23 @@ library(stringr)
 library(tidyr)
 ```
 
+Bloco de código 2. Carregamento de dados
 
-```{r carga_pnad}
-# 2. Carga de Dados: Buscando a PNAD no SIDRA
-dados_brutos_pnad <- readxl::read_excel('C:\\mark\\projetos\\oficina_r_mackrio\\tabela4093.xlsx',
+```{r carga_pnad, message=FALSE, warning=FALSE}
+# 2. Carga de dados - arquivo no Temp
+
+#### ajustar caminho da pasta - EXEMPLO: '/cloud/project/'
+
+dados_brutos_pnad <- readxl::read_excel('/cloud/project/Tabela4093.xlsx',
                                         col_types = "text")
 
 # observar dados parciais para identificar dados baixados
 dplyr::tibble(head(dados_brutos_pnad))
 ```
 
+Bloco de código 3. Limpeza de dados
 
-```{r limpeza_pnad}
+```{r limpeza_pnad, warning=FALSE}
 # 3. Limpeza dos Dados
 # A limpeza aqui é um pouco mais complexa com a data (trimestres)
 pnad_limpo <- dados_brutos_pnad %>%
@@ -71,6 +70,7 @@ pnad_limpo <- dados_brutos_pnad %>%
 dplyr::tibble(head(pnad_limpo))
 ```
 
+Bloco de código 4. Cálculo da média para análise
 
 ```{r calculo_pnad}
 # 4. Cálculo das Medidas
@@ -90,17 +90,18 @@ media_por_regiao_2025 <- pnad_limpo %>%
   )
 
 
-print("Tabela com a taxa média de desemprego\n")
-
 df_media <- tibble(`Grande Região` = media_por_regiao$regiao,
                    `Média no período` = media_por_regiao$media_desemprego_periodo,
                    `Média em 2025` = media_por_regiao_2025$media_desemprego_periodo)
+
 print(df_media)
 ```
 
 
-A média histórica está maior em todas as regiões. O ano de 2025 têm valores menores que média histórica.
+Acima temos a Tabela com a taxa média de desemprego. No Nordeste temos a maior média da taxa de desemprego entre as regiões. O ano de 2025 têm valores menores que a média histórica em todas as regiões.
 
+
+Bloco de código 5. Visualização inicial
 
 ```{r visualizacao_pnad}
 # Os dados para o gráfico já estão prontos em 'pnad_limpo'
@@ -116,6 +117,8 @@ ggplot(pnad_final_plot, aes(x = data, y = taxa_desemprego, color = regiao)) +
   ) +
   theme_minimal()
 ```
+
+Bloco de código 6. Visualização para análise
 
 ```{r visualizacao_pnad2}
 # 5. Visualização dos Resultados
@@ -135,12 +138,12 @@ ggplot(pnad_final_plot, aes(x = data, y = taxa_desemprego, color = regiao)) +
 ```
 
 
-#### Avaliação Básica dos Resultados
+#### Análise Básica dos Resultados
 
 O gráfico de linhas mostrará duas coisas claramente:
 
 
-Tendência: As linhas se movem juntas. Crescimento de 2012 a 2016. Estabilidade até 2019, período de queda constante durante a pandemia e queda suave até 2025. 
+**Tendência**: As linhas se movem juntas. Crescimento de 2012 a 2016. Estabilidade até 2019, período de queda constante durante a pandemia é um preenchimento de pontos feito pelo gráfico, pois entre o primeiro trimestre de 2020 e de 2022 não foram divulgados dados no nível de região. E, a partir de 2022, uma queda suave até 2025. 
 
 
-Nível: As linhas estão em "andares" diferentes. O gráfico provavelmente mostrará a taxa do Nordeste consistentemente acima da média nacional, e a do Sul consistentemente abaixo, evidenciando diferenças estruturais no mercado de trabalho regional.
+**Nível**: As linhas estão em "andares" diferentes. O gráfico provavelmente mostrará a taxa do Nordeste consistentemente acima da média nacional, e a do Sul consistentemente abaixo, evidenciando diferenças estruturais no mercado de trabalho regional.
